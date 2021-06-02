@@ -48,7 +48,7 @@ CHART cyberups.output_voltage '' "UPS Output Voltage" "Volts" output cyberups.ou
 DIMENSION output_voltage voltage absolute 1 100
              
 CHART cyberups.load '' "UPS Load" "Watts" ups cyberups.load area $((cyberups_priority)) $cyberups_update_every
-DIMENSION load load absolute 1 400	     
+DIMENSION load load absolute 1 1	     
 	     
 CHART cyberups.loadp '' "UPS Load" "percentage" ups cyberups.loadp area $((cyberups_priority + 5)) $cyberups_update_every
 DIMENSION loadp loadp absolute 1 100
@@ -85,7 +85,7 @@ BEGIN {
 /.*Utility.*/    	{ input_voltage = \$3 * 100};
 /.*Output.*/     	{ output_voltage = \$3 * 100 };
 /.*Load.*/      	{ load = \$2 };
-/.*Load Percentage.*/ 	{ loadp = load / power_rating * 100 * 100};
+/.*Load Percentage.*/ 	{ loadp = \$2 / power_rating * 100 * 100};
 /.*Remaining.*/  	{ time = \$3 * 100 };
 END {
 	print \"BEGIN cyberups.charge $1\";
@@ -103,6 +103,10 @@ END {
 	print \"BEGIN cyberups.load $1\";
 	print \"SET load = \" load;
 	print \"END\"
+	
+	print \"BEGIN cyberups.loadp $1\";
+	print \"SET loadp = \" loadp;
+	print \"END\"	
 
 	print \"BEGIN cyberups.time $1\";
 	print \"SET time = \" time;
