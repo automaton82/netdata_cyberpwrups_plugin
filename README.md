@@ -50,6 +50,12 @@ git clone https://github.com/HawtDogFlvrWtr/netdata_cyberpwrups_plugin --depth 1
 sudo cp netdata_cyberpwrups_plugin/cyberups.chart.sh /usr/libexec/netdata/charts.d/
 
 sudo cp netdata_cyberpwrups_plugin/cyberups.conf /etc/netdata/charts.d/
+
+mkdir /etc/systemd/system/netdata.service.d
+echo -e '[Service]\nCapabilityBoundingSet=~' | tee /etc/systemd/system/netdata.service.d/unset-capability-bounding-set.conf
+systemctl daemon-reload
+systemctl restart netdata.service
+
 ```
 
 ## Charts ##
