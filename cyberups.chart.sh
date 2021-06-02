@@ -46,9 +46,12 @@ DIMENSION input_voltage voltage absolute 1 100
 
 CHART cyberups.output_voltage '' "UPS Output Voltage" "Volts" output cyberups.output.voltage line $((cyberups_priority + 4)) $cyberups_update_every
 DIMENSION output_voltage voltage absolute 1 100
-                                                                                                                                                                                                                   
-CHART cyberups.load '' "UPS Load" "percentage" ups cyberups.load area $((cyberups_priority)) $cyberups_update_every
-DIMENSION load load absolute 1 100
+             
+CHART cyberups.load '' "UPS Load" "Watts" ups cyberups.load area $((cyberups_priority)) $cyberups_update_every
+DIMENSION load load absolute 1 100	     
+	     
+CHART cyberups.loadp '' "UPS Load" "percentage" ups cyberups.loadp area $((cyberups_priority + 5)) $cyberups_update_every
+DIMENSION loadp loadp absolute 1 100
                                                                                                                                                                                                                    
 CHART cyberups.time '' "UPS Time Remaining" "Minutes" ups cyberups.time area $((cyberups_priority + 2)) $cyberups_update_every
 DIMENSION time time absolute 1 100
@@ -74,14 +77,16 @@ BEGIN {
         input_voltage = 0;
         output_voltage = 0;
         load = 0;
+	loadp = 0;
         time = 0;
 }
-/.*Battery.*/   { battery_charge = \$3 * 100};
-/.*Rating.*Power.*/ { power_rating = \$3 }
-/.*Utility.*/    { input_voltage = \$3 * 100};
-/.*Output.*/     { output_voltage = \$3 * 100 };
-/.*Load.*/      { load = \$2 / power_rating * 100 * 100};
-/.*Remaining.*/  { time = \$3 * 100 };
+/.*Battery.*/   	{ battery_charge = \$3 * 100};
+/.*Rating.*Power.*/ 	{ power_rating = \$3 }
+/.*Utility.*/    	{ input_voltage = \$3 * 100};
+/.*Output.*/     	{ output_voltage = \$3 * 100 };
+/.*Load.*/      	{ load = \$2 };
+/.*Load Percentage.*/ 	{ loadp = \$2 / power_rating * 100 * 100};
+/.*Remaining.*/  	{ time = \$3 * 100 };
 END {
 	print \"BEGIN cyberups.charge $1\";
 	print \"SET battery_charge = \" battery_charge;
@@ -97,6 +102,10 @@ END {
 
 	print \"BEGIN cyberups.load $1\";
 	print \"SET load = \" load;
+	print \"END\"
+
+	print \"BEGIN cyberups.loadp $1\";
+	print \"SET loadp = \" loadp;
 	print \"END\"
 
 	print \"BEGIN cyberups.time $1\";
