@@ -40,37 +40,34 @@ cyberups_create() {
         cat <<EOF
 CHART cyberups.charge '' "UPS Charge" "percentage" ups cyberups.charge area $((cyberups_priority + 1)) $cyberups_update_every
 DIMENSION battery_charge charge absolute 1 100
-                                                                                                                                                                                                                   
-CHART cyberups.input_voltage '' "UPS Input Voltage" "Volts" input cyberups.input.voltage line $((cyberups_priority + 4)) $cyberups_update_every
-DIMENSION input_voltage voltage absolute 1 100
 
-CHART cyberups.output_voltage '' "UPS Output Voltage" "Volts" output cyberups.output.voltage line $((cyberups_priority + 4)) $cyberups_update_every
-DIMENSION output_voltage voltage absolute 1 100
-             
+CHART cyberups.voltage '' "UPS Voltage" "Volts" voltage cyberups.voltage line $((cyberups_priority + 4)) $cyberups_update_every
+DIMENSION input_voltage input absolute 1 100
+DIMENSION output_voltage output absolute 1 100
+
 CHART cyberups.load '' "UPS Load" "Watts" ups cyberups.load area $((cyberups_priority)) $cyberups_update_every
 DIMENSION load load absolute 1 1	     
-	     
+
 CHART cyberups.loadp '' "UPS Load Percentage" "percentage" ups cyberups.loadp area $((cyberups_priority + 5)) $cyberups_update_every
 DIMENSION loadp loadp absolute 1 100
-                                                                                                                                                                                                                   
+
 CHART cyberups.time '' "UPS Time Remaining" "Minutes" ups cyberups.time area $((cyberups_priority + 2)) $cyberups_update_every
 DIMENSION time time absolute 1 100
-                                                                                                                                                                                                                   
+
 EOF
         return 0
 }
-                                                                                                                                                                                                                   
-                                                                                                                                                                                                                   
+
 cyberups_update() {
         # the first argument to this function is the microseconds since last update
         # pass this parameter to the BEGIN statement (see bellow).
-                                                                                                                                                                                                                   
+
         # do all the work to collect / calculate the values
         # for each dimension
         # remember: KEEP IT SIMPLE AND SHORT
-                                                                                                                                                                                                                   
+
         cyberups_get | awk "
-                                                                                                                                                                                                                   
+
 BEGIN {
         battery_charge = 0;
         power_rating = 0;
@@ -90,18 +87,15 @@ END {
 	print \"SET battery_charge = \" battery_charge;
 	print \"END\"
 
-	print \"BEGIN cyberups.input_voltage $1\";
+	print \"BEGIN cyberups.voltage $1\";
 	print \"SET input_voltage = \" input_voltage;
-	print \"END\"
-
-	print \"BEGIN cyberups.output_voltage $1\";
-	print \"SET output_voltage = \" output_voltage;
+        print \"SET output_voltage = \" output_voltage;
 	print \"END\"
 
 	print \"BEGIN cyberups.load $1\";
 	print \"SET load = \" load;
 	print \"END\"
-	
+
 	print \"BEGIN cyberups.loadp $1\";
 	print \"SET loadp = \" load / power_rating * 100 * 100;
 	print \"END\"	
