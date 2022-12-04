@@ -42,7 +42,7 @@ To disable the cyberpwrups plugin, edit `/etc/netdata/charts.d.conf` and add `cy
 
 Example for standard NetData installation under Ubuntu:
 
-```
+```shell
 cd /tmp/
 
 git clone https://github.com/HawtDogFlvrWtr/netdata_cyberpwrups_plugin --depth 1
@@ -62,7 +62,7 @@ systemctl restart netdata.service
 
 This information is extracted:
 
-- Load percentage
+- Load level (watts/percentage)
 - Charge percentage
 - Remaining runtime
 - Input Voltage
@@ -74,7 +74,7 @@ Bugs:
 * No known bugs at the moment
 
 Issues:
-* The netdata user doesn't have permissions to run pwrstat to get the information needed. To resolve this, create the file /etc/sudoers.d/netdata with the content "netdata ALL = NOPASSWD: /usr/sbin/pwrstat" 
+* The netdata user doesn't have permissions to run `pwrstat` to get the information needed. To resolve this, create the file `/etc/sudoers.d/netdata` with the content `netdata ALL = (root) NOPASSWD: /usr/sbin/pwrstat`
 
 ## FAQ ##
 
